@@ -16,7 +16,7 @@ const gameRouter = require('./routes/game');
 const userRouter = require('./routes/user');
 
 const { sequelize } = require('./models');
-// const cronJob = require('./cron'); // 밸런스 게임 생성 AI 스케줄러
+const initAIGame = require('./cron'); // 밸런스 게임 생성 AI 스케줄러
 
 const app = express();
 app.set('port', process.env.PORT || 3000);
@@ -30,6 +30,7 @@ sequelize
   .sync({ force: false })
   .then(() => {
       console.log('데이터베이스 연결 성공');
+      initAIGame(); // AI 게임 생성 스케줄러 시작
   })
   .catch((err) => {
       console.error(err);
@@ -39,11 +40,11 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser(process.env.COOKIE__SECRET));
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(session({
   resave: false,
   saveUninitialized: false,
-  secret: process.env.COOKIE__SECRET,
+  secret: process.env.COOKIE_SECRET,
   cookie: {
       httpOnly: true,
       secure: false,
