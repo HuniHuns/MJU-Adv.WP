@@ -1,0 +1,40 @@
+{
+  "name": "awp_final",
+  "version": "1.0.0",
+  "description": "express와 데이터베이스를 이용한 웹서버 개발 프로젝트",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HuniHuns/MJU-Adv.WP.git"
+  },
+  "keywords": [],
+  "author": "JHLee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HuniHuns/MJU-Adv.WP/issues"
+  },
+  "homepage": "https://github.com/HuniHuns/MJU-Adv.WP#readme",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "morgan": "^1.10.1",
+    "mysql2": "^3.15.3",
+    "node-cron": "^4.2.1",
+    "nunjucks": "^3.2.4",
+    "passport": "^0.7.0",
+    "passport-kakao": "^1.0.1",
+    "passport-local": "^1.0.0",
+    "sequelize": "^6.37.7",
+    "sequelize-cli": "^6.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
