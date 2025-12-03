@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5 col-lg-4">
+    <div class="card p-4">
+      <h3 class="text-center mb-4 fw-bold">로그인</h3>
+      
+      <form action="/auth/login" method="post">
+        <div class="mb-3">
+          <label for="email" class="form-label">이메일</label>
+          <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required autofocus>
+        </div>
+        <div class="mb-4">
+          <label for="password" class="form-label">비밀번호</label>
+          <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-dark btn-lg">로그인</button>
+          <a href="/auth/kakao" class="btn btn-kakao btn-lg">카카오 로그인</a>
+        </div>
+      </form>
+
+      <div class="text-center mt-3">
+        <span class="text-muted">아직 회원이 아니신가요?</span>
+        <a href="/join" class="text-decoration-none fw-bold ms-1">회원가입</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

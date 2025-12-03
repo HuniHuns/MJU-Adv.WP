@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-5 col-lg-4">
+    <div class="card p-4">
+      <h3 class="text-center mb-4 fw-bold">회원가입</h3>
+      
+      <form action="/auth/join" method="post">
+        <div class="mb-3">
+          <label for="join-email" class="form-label">이메일</label>
+          <input type="email" class="form-control" id="join-email" name="email" placeholder="name@example.com" required>
+        </div>
+        
+        <div class="mb-3">
+          <label for="join-nickname" class="form-label">닉네임</label>
+          <input type="text" class="form-control" id="join-nick" name="nickname" placeholder="사용할 별명을 입력하세요" required>
+        </div>
+
+        <div class="mb-4">
+          <label for="join-password" class="form-label">비밀번호</label>
+          <input type="password" class="form-control" id="join-password" name="password" required>
+        </div>
+        
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary btn-lg">가입하기</button>
+        </div>
+      </form>
+      
+      <div class="text-center mt-3">
+        <span class="text-muted">이미 계정이 있으신가요?</span>
+        <a href="/login" class="text-decoration-none fw-bold ms-1">로그인</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
