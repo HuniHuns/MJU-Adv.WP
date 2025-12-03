@@ -121,5 +121,24 @@ router.get('/game/:id', async (req, res, next) => {
   }
 });
 
+// 6. 유저 정보 페이지
+router.get('/myinfo', isLoggedIn, async (req, res, next) => {
+  try{
+    const myVotes = await Vote.findAll({
+      where: { UserId: req.user.id },
+      include: [{ model: Game }],
+      order: [['createdAt', 'DESC']],
+    });
+
+    res.render('myInfo', {
+      title: '내 정보',
+      myVotes,
+    });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
 
 module.exports = router;

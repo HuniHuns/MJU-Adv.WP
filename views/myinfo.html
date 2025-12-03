@@ -1,0 +1,126 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h2 class="mb-4 fw-bold">👤 내 정보</h2>
+      
+    <div class="card mb-5 shadow-sm">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="card-title text-muted mb-0">계정 정보</h5>
+          {% if user.provider == 'kakao' %}
+            <span class="badge bg-warning text-dark">카카오 로그인 중</span>
+          {% else %}
+            <span class="badge bg-secondary">로컬 로그인 중</span>
+          {% endif %}
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">닉네임</label>
+          
+          <div id="nick-view" class="d-flex align-items-center justify-content-between p-2 border rounded bg-light">
+            <span class="fs-5" id="current-nick">{{ user.nickname }}</span>
+            <button class="btn btn-sm btn-outline-primary" onclick="toggleNickEdit()">수정</button>
+          </div>
+
+          <div id="nick-edit" class="d-flex gap-2 d-none">
+            <input type="text" id="new-nick" class="form-control" value="{{ user.nickname }}">
+            <button class="btn btn-success" onclick="updateNickname()">저장</button>
+            <button class="btn btn-secondary" onclick="toggleNickEdit()">취소</button>
+          </div>
+        </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">이메일</label>
+            <div class="p-2 border rounded bg-light text-muted">
+              {{ user.email }}
+            </div>
+          </div>
+          
+          <hr>
+
+          <div class="text-end">
+            <button class="btn btn-outline-danger btn-sm" onclick="withdrawUser()">회원 탈퇴</button>
+          </div>
+      </div>
+    </div>
+
+    <h4 class="mb-3 fw-bold">🗳️ 내가 참여한 투표 기록</h4>
+    <div class="list-group shadow-sm">
+      {% for vote in myVotes %}
+      <a href="/game/{{ vote.Game.id }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3">
+        <div class="text-truncate me-3">
+          <span class="fw-bold">{{ vote.Game.title }}</span>
+        </div>
+          
+        <div class="flex-shrink-0 text-end">
+          <span class="badge bg-{{ 'danger' if vote.choice == 'A' else 'primary' }} rounded-pill px-3 py-2">
+            {{ vote.choice }} 선택함
+          </span>
+          <br>
+          <small class="text-muted" style="font-size: 0.8rem;">{{ vote.createdAt.toLocaleDateString() }}</small>
+        </div>
+      </a>
+      {% else %}
+      <div class="list-group-item text-center text-muted py-5">
+        <p class="mb-0">아직 참여한 투표가 없습니다.</p>
+        <a href="/game/list" class="btn btn-sm btn-primary mt-2">게임 참여하러 가기</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  // 1. 닉네임 수정 모드 토글 함수
+  function toggleNickEdit() {
+    const viewDiv = document.getElementById('nick-view');
+    const editDiv = document.getElementById('nick-edit');
+    
+    // 클래스 d-none(숨김)을 넣었다 뺐다 하며 전환
+    if (editDiv.classList.contains('d-none')) {
+      editDiv.classList.remove('d-none');
+      viewDiv.classList.add('d-none');
+    } else {
+      editDiv.classList.add('d-none');
+      viewDiv.classList.remove('d-none');
+    }
+  }
+
+  // 2. 닉네임 수정 요청 (Axios)
+  async function updateNickname() {
+    const newNick = document.getElementById('new-nick').value;
+    
+    if (!newNick) {
+      alert('변경할 닉네임을 입력해주세요.');
+      return;
+    }
+
+    try {
+      await axios.patch('/user/nickname', { nickname: newNick });
+      
+      alert('닉네임이 변경되었습니다.');
+      location.reload(); // 성공 시 새로고침하여 반영
+  } catch (err) {
+      console.error(err);
+      alert(err.response?.data || '수정 실패');
+  }
+  }
+
+  // 3. 회원 탈퇴 요청 (Axios)
+  async function withdrawUser() {
+    if (!confirm('정말로 탈퇴하시겠습니까? 탈퇴 후 정보는 복구할 수 없습니다.')) return;
+    
+    try {
+      await axios.delete('/user');
+        
+      alert('탈퇴 처리되었습니다. 이용해 주셔서 감사합니다.');
+      location.href = '/'; // 메인 화면으로 이동
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data || '탈퇴 실패');
+    }
+  }
+</script>
+{% endblock %}

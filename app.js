@@ -13,6 +13,7 @@ dotenv.config();
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
 const gameRouter = require('./routes/game');
+const userRouter = require('./routes/user');
 
 const { sequelize } = require('./models');
 // const cronJob = require('./cron'); // 밸런스 게임 생성 AI 스케줄러
@@ -55,6 +56,7 @@ app.use(passport.session());
 app.use('/', pageRouter);
 app.use('/auth', authRouter);
 app.use('/game', gameRouter);
+app.use('/user', userRouter);
 
 app.use((req, res, next) => {
     const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
