@@ -1,0 +1,134 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="text-center mb-5">
+      <span class="badge bg-secondary mb-2">{{ '🤖 AI' if game.creatorType == 'ai' else '👤 ' + game.User.nickname }}</span>
+      <h1 class="fw-bold">{{ game.title }}</h1>
+    </div>
+
+    <div class="row g-3 mb-5">
+      <div class="col-6">
+        <form action="/game/{{ game.id }}/vote" method="post" class="h-100">
+          <input type="hidden" name="choice" value="A">
+          <button type="submit" class="btn w-100 py-4 h-100 position-relative 
+              {{ 'btn-danger' if userVote.choice == 'A' else 'btn-outline-danger' }}"
+              {% if userVote %}disabled{% endif %}>
+            <h3 class="fw-bold">{{ game.optionA }}</h3>
+            <span class="badge bg-danger rounded-pill mt-2">
+              {{ game.countA + '표' if userVote else '? 표' }}
+            </span>
+            {% if userVote.choice == 'A' %}
+              <div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark">✔ 선택</div>
+            {% endif %}
+          </button>
+        </form>
+      </div>
+      <div class="col-6">
+        <form action="/game/{{ game.id }}/vote" method="post" class="h-100">
+          <input type="hidden" name="choice" value="B">
+          <button type="submit" class="btn w-100 py-4 h-100 position-relative 
+          {{ 'btn-primary' if userVote.choice == 'B' else 'btn-outline-primary' }}"
+          {% if userVote %}disabled{% endif %}>
+            <h3 class="fw-bold">{{ game.optionB }}</h3>
+            <span class="badge bg-primary rounded-pill mt-2">
+              {{ game.countB + '표' if userVote else '? 표' }}
+            </span>
+            {% if userVote.choice == 'B' %}
+              <div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-dark">✔ 선택</div>
+            {% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header bg-white fw-bold">댓글 ({{ game.Comments.length }})</div>
+      
+      {% if userVote %}
+        <ul class="list-group list-group-flush">
+          {% for comment in game.Comments %}
+          <li class="list-group-item">
+              <div id="view-{{ comment.id }}">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <div>
+                    <strong>{{ comment.User.nickname }}</strong>
+                    <span class="badge bg-{{ 'danger' if comment.choice == 'A' else 'primary' }} ms-1">{{ comment.choice }} 선택</span>
+                    <small class="text-muted ms-2">{{ comment.createdAt.toLocaleDateString() }}</small>
+                  </div>
+                  {% if user and user.id == comment.UserId %}
+                    <div>
+                      <button class="btn btn-sm btn-outline-secondary" onclick="toggleEdit('{{ comment.id }}')">수정</button>
+                      <button class="btn btn-sm btn-outline-danger" onclick="deleteComment('{{ comment.id }}')">삭제</button>
+                    </div>
+                  {% endif %}
+                </div>
+                <div class="text-break">{{ comment.content }}</div>
+              </div>
+
+              <div id="edit-{{ comment.id }}" class="d-none">
+                <div class="mb-2 fw-bold">댓글 수정</div>
+                <div class="d-flex gap-2">
+                  <input type="text" id="input-{{ comment.id }}" class="form-control" value="{{ comment.content }}">
+                  <button class="btn btn-success" onclick="updateComment('{{ comment.id }}')">저장</button>
+                  <button class="btn btn-secondary" onclick="toggleEdit('{{ comment.id }}')">취소</button>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="card-body bg-light">
+          <form action="/game/{{ game.id }}/comment" method="post" class="d-flex gap-2">
+            <input type="text" name="content" class="form-control" placeholder="댓글을 남겨보세요!" required>
+            <button type="submit" class="btn btn-dark">등록</button>
+          </form>
+        </div>
+      {% else %}
+        <div class="card-body text-center py-5 position-relative">
+          <div class="blur-content">
+            <p>댓글 내용이 가려져 있습니다.</p>
+            <p>댓글 내용이 가려져 있습니다.</p>
+            <p>댓글 내용이 가려져 있습니다.</p>
+          </div>
+          <div class="position-absolute top-50 start-50 translate-middle w-100">
+            <h5 class="fw-bold bg-white d-inline-block px-3 py-2 rounded border shadow-sm">
+              🔒 투표 후 결과를 확인하세요!
+            </h5>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleEdit(id) {
+    document.getElementById(`view-${id}`).classList.toggle('d-none');
+    document.getElementById(`edit-${id}`).classList.toggle('d-none');
+  }
+
+  async function updateComment(id) {
+    const content = document.getElementById(`input-${id}`).value;
+    if (!content) return alert('내용을 입력하세요.');
+    try {
+        await axios.put(`/game/comment/${id}`, { content });
+        location.reload();
+    } catch (err) {
+        console.error(err);
+        alert(err.response?.data || '수정 실패');
+    }
+  }
+
+  async function deleteComment(id) {
+    if (!confirm('삭제하시겠습니까?')) return;
+    try {
+        await axios.delete(`/game/comment/${id}`);
+        location.reload();
+    } catch (err) {
+        console.error(err);
+        alert(err.response?.data || '삭제 실패');
+    }
+  }
+</script>
+{% endblock %}

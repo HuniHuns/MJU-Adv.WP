@@ -21,12 +21,12 @@ class Game extends Sequelize.Model {
       // 선택지1 선택 횟수
       countA: {
         type: Sequelize.INTEGER,
-        defalutValue: 0,
+        defaultValue: 0,
       },
       // 선택지2 선택 횟수
       countB: {
         type: Sequelize.INTEGER,
-        defalutValue: 0,
+        defaultValue: 0,
       },
       // 생성자 타입(유저 or AI)
       creatorType: {
@@ -52,6 +52,8 @@ class Game extends Sequelize.Model {
 
   static associate(db) {
     db.Game.belongsTo(db.User);
+    db.Game.hasMany(db.Vote);
+    db.Game.hasMany(db.Comment);
   }
 }
 

@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="text-center mb-5">
+  <h1 class="fw-bold display-5">🔥 밸런스 게임 🔥</h1>
+  <p class="lead text-muted">당신의 선택은 무엇인가요?</p>
+  <a href="/game/list" class="btn btn-outline-dark rounded-pill px-4 mt-2">전체 게임 목록 보기</a>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card h-100" style="background-color: #f3e5f5;">
+      <div class="card-body text-center p-5">
+        <span class="badge bg-primary mb-3">🤖 오늘의 AI Pick</span>
+        {% if aiGame %}
+          <h3 class="fw-bold mb-4">{{ aiGame.title }}</h3>
+          <div class="d-flex justify-content-center gap-2 mb-4">
+            <button class="btn btn-outline-danger w-50 py-3 disabled">{{ aiGame.optionA }}</button>
+            <button class="btn btn-outline-primary w-50 py-3 disabled">{{ aiGame.optionB }}</button>
+          </div>
+          <a href="/game/{{ aiGame.id }}" class="btn btn-primary w-100">투표하러 가기</a>
+        {% else %}
+          <div class="py-5 text-muted">AI가 주제를 생각 중입니다...</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card h-100" style="background-color: #e3f2fd;">
+      <div class="card-body text-center p-5">
+        <span class="badge bg-warning text-dark mb-3">👑 유저 인기 1위</span>
+        {% if userGame %}
+          <h3 class="fw-bold mb-4">{{ userGame.title }}</h3>
+          <div class="d-flex justify-content-center gap-2 mb-4">
+            <button class="btn btn-outline-danger w-50 py-3 disabled">{{ userGame.optionA }}</button>
+            <button class="btn btn-outline-primary w-50 py-3 disabled">{{ userGame.optionB }}</button>
+          </div>
+          <a href="/game/{{ userGame.id }}" class="btn btn-primary w-100">투표하러 가기</a>
+        {% else %}
+          <div class="py-5 text-muted">아직 등록된 게임이 없습니다.</div>
+          <a href="/game/create" class="btn btn-sm btn-outline-primary">첫 게임 만들기</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

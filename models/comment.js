@@ -4,7 +4,7 @@ class Comment extends Sequelize.Model {
   static init(sequelize) {
     const commentAttr = {
       // 댓글 내용
-      contents: {
+      content: {
         type: Sequelize.STRING(200),
         allowNull: false,
       },

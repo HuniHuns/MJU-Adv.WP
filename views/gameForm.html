@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-6">
+    <div class="card p-4">
+      <h3 class="fw-bold mb-4">새 밸런스 게임 만들기</h3>
+      <form action="/game" method="post">
+        <div class="mb-3">
+          <label class="form-label">질문 제목</label>
+          <input type="text" name="title" class="form-control" placeholder="예: 평생 라면 vs 평생 밥" required>
+        </div>
+        <div class="row">
+          <div class="col-6 mb-3">
+            <label class="form-label text-danger">선택지 A</label>
+            <input type="text" name="optionA" class="form-control" required>
+          </div>
+          <div class="col-6 mb-3">
+            <label class="form-label text-primary">선택지 B</label>
+            <input type="text" name="optionB" class="form-control" required>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-dark w-100 mt-3">등록하기</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

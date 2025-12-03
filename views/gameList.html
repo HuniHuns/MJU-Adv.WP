@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>📋 전체 게임 목록</h2>
+  {% if user %}
+  <a href="/game/create" class="btn btn-dark">+ 새 게임 만들기</a>
+  {% endif %}
+</div>
+
+<div class="row">
+  {% for game in games %}
+  <div class="col-md-6 mb-4">
+    <div class="card h-100">
+      <div class="card-header bg-white d-flex justify-content-between align-items-center border-0 pt-3">
+        {% if game.creatorType == 'ai' %}
+        <span class="badge bg-primary">🤖 AI</span>
+        {% else %}
+        <span class="badge bg-secondary">👤 User</span>
+        {% endif %}
+        <small class="text-muted">{{ game.User.nickname }}</small>
+      </div>
+      <div class="card-body text-center">
+        <h5 class="fw-bold mb-3">
+          <a href="/game/{{ game.id }}" class="text-decoration-none text-dark stretched-link">{{ game.title }}</a>
+        </h5>
+        <div class="row g-2">
+          <div class="col-6">
+            <div class="p-2 border rounded bg-light text-danger">{{ game.optionA }}</div>
+          </div>
+          <div class="col-6">
+            <div class="p-2 border rounded bg-light text-primary">{{ game.optionB }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer bg-transparent border-0 text-end">
+        <small class="text-muted">참여 {{ game.countA + game.countB }}명</small>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12 text-center py-5 text-muted">게임이 없습니다.</div>
+  {% endfor %}
+</div>
+
+<nav class="mt-4">
+  <ul class="pagination justify-content-center">
+    {% for i in range(1, totalPage + 1) %}
+    <li class="page-item {% if currentPage == i %}active{% endif %}">
+      <a class="page-link" href="/game/list?page={{ i }}">{{ i }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>
+
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        transition: 0.3s;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+</style>
+{% endblock %}
