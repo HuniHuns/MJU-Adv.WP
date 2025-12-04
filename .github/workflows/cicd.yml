@@ -1,0 +1,67 @@
+name: Deploy AWP Final Project
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    - name: Build and Push App Image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/balance-game:latest
+
+    - name: Copy Docker Compose File
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        source: "docker-compose.yml"
+        target: "/home/${{ secrets.SERVER_USER }}/awp-final/"
+
+    - name: Deploy on Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        script: |
+          # 폴더 생성 및 이동 (awp-final)
+          mkdir -p /home/${{ secrets.SERVER_USER }}/awp-final
+          cd /home/${{ secrets.SERVER_USER }}/awp-final
+          
+          # .env 파일 생성
+          echo "DOCKER_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" > .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "COOKIE_SECRET=${{ secrets.COOKIE_SECRET }}" >> .env
+          echo "KAKAO_ID=${{ secrets.KAKAO_ID }}" >> .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" >> .env
+
+          # 3. Docker Hub 로그인
+          # 서버에 저장된 옛날 로그인 정보를 무시하고, 이번 배포를 위해 새로 로그인합니다.
+          # -u: 아이디, -p: 비밀번호(또는 토큰)
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          
+          # 최신 이미지 받기
+          sudo docker compose pull
+          
+          # 컨테이너 실행
+          sudo docker compose up -d
+          
+          # 정리
+          sudo docker image prune -f

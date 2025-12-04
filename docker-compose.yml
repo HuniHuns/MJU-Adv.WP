@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # 1. MySQL 데이터베이스 (밸런스 게임 전용)
+  mysqldb:
+    image: mysql:8.0
+    container_name: balance-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: balance_db
+    ports:
+      # ✅ [중요] 기존 DB(3306)와 충돌 방지를 위해 호스트 포트를 3307로 변경
+      - "3307:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    networks:
+      - vs-network
+
+  # 2. Node.js 앱
+  vs-app:
+    image: ${DOCKER_USERNAME}/balance-game:latest
+    container_name: awp-final
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysqldb
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      # ✅ 내부 네트워크에서는 서비스 이름(mysqldb)과 원래 포트(3306)로 통신하므로 변경 불필요
+      DB_HOST: mysqldb
+      DB_PASSWORD: ${DB_PASSWORD}
+      COOKIE_SECRET: ${COOKIE_SECRET}
+      KAKAO_ID: ${KAKAO_ID}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    networks:
+      - awp-network
+
+networks:
+  awp-network:
+    driver: bridge
