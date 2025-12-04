@@ -15,7 +15,7 @@ services:
     volumes:
       - ./mysql-data:/var/lib/mysql
     networks:
-      - vs-network
+      - awp-network
 
   # 2. Node.js 앱
   vs-app:
