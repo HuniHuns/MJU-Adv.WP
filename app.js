@@ -27,7 +27,7 @@ nunjucks.configure('views', {
 });
 
 sequelize
-  .sync({ force: false })
+  .sync({ force: false, alter: true })
   .then(() => {
       console.log('데이터베이스 연결 성공');
       initAIGame(); // AI 게임 생성 스케줄러 시작
