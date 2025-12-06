@@ -51,7 +51,7 @@ class Game extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Game.belongsTo(db.User);
+    db.Game.belongsTo(db.User, { onDelete : 'SET NULL' });
     db.Game.hasMany(db.Vote);
     db.Game.hasMany(db.Comment);
   }

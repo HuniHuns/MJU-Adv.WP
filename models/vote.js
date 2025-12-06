@@ -31,7 +31,7 @@ class Vote extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Vote.belongsTo(db.User);
+    db.Vote.belongsTo(db.User, { onDelete : 'SET NULL' });
     db.Vote.belongsTo(db.Game);
   }
 }

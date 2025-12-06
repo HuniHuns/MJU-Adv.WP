@@ -30,7 +30,7 @@ class Comment extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Comment.belongsTo(db.User);
+    db.Comment.belongsTo(db.User, { onDelete : 'SET NULL' });
     db.Comment.belongsTo(db.Game);
   }
 }

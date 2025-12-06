@@ -27,7 +27,9 @@ router.patch('/nickname', isLoggedIn, async (req, res, next) => {
 // 2. 회원 탈퇴 (DELETE /user)
 router.delete('/', isLoggedIn, async (req, res, next) => {
   try {
-    await User.destroy({ where: { id: req.user.id } });
+    await User.destroy({ 
+      where: { id: req.user.id },
+    force: true });
 
     req.logout(() => {
       req.session.destroy();

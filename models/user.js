@@ -42,9 +42,9 @@ class User extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.User.hasMany(db.Game);
-    db.User.hasMany(db.Vote);
-    db.User.hasMany(db.Comment);
+    db.User.hasMany(db.Game, { onDelete : 'SET NULL' });
+    db.User.hasMany(db.Vote, { onDelete : 'SET NULL' });
+    db.User.hasMany(db.Comment, { onDelete : 'SET NULL' });
   }
 }
 

@@ -16,7 +16,7 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
       where: { email },
       paranoid: false });
     if(exUser) {
-      return res.redirect('/join?error=exist');
+      return res.redirect(`/join?error=이미 존재하는 이메일입니다.`);
     }
     console.info('___User.create(): ' + nickname);
     const hash = await bcrypt.hash(password, 12);
