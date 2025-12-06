@@ -130,7 +130,7 @@ router.get('/myinfo', isLoggedIn, async (req, res, next) => {
       order: [['createdAt', 'DESC']],
     });
 
-    res.render('myInfo', {
+    res.render('myinfo', {
       title: '내 정보',
       myVotes,
     });
