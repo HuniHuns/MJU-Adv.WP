@@ -12,7 +12,9 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
   const { email, nickname, password } = req.body;
 
   try{
-    const exUser = await User.findOne({ where: { email } });
+    const exUser = await User.findOne({ 
+      where: { email },
+      paranoid: false });
     if(exUser) {
       return res.redirect('/join?error=exist');
     }
