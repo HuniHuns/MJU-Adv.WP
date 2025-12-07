@@ -4,7 +4,12 @@ exports.isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
     next();
   } else {
-    res.status(403).send('로그인을 먼저 진행해주세요.');
+    res.status(403).send(`
+      <script>
+        alert('로그인을 먼저 진행해주세요.');
+        location.href = '/login';
+      </script>
+    `);
   }
 };
 
